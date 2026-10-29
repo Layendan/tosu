@@ -283,11 +283,9 @@ export class Process {
         if (entriesLength < 0 || entriesLength > 1000) return result;
 
         for (let i = 0; i < entriesLength; i++) {
-            // Entry<TKey, TValue>: key @0, value @8, hashCode @0x10, next @0x14
             const entrySize = 24;
             const entry = entriesArray + 0x8 + 0x8 + i * entrySize;
 
-            // free-list entries have next <= -2 (.NET 5+)
             const next = this.readInt(entry + 0x14);
             if (next < -1) continue;
 
@@ -306,7 +304,6 @@ export class Process {
     readGuid(address: number): string {
         const buffer = this.readBuffer(address, 16);
 
-        // .NET Guid.ToString(): first three groups are little-endian
         const hex = (start: number, end: number) =>
             buffer.subarray(start, end).toString('hex');
 
